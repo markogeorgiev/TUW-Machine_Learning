@@ -1,8 +1,4 @@
-import nnfs
 import numpy as np
-from matplotlib import pyplot as plt
-from torch.distributed.tensor import randn
-from nnfs.datasets import vertical_data
 
 np.random.seed(0)
 
@@ -134,13 +130,6 @@ import numpy as np
 nnfs.init()
 
 X, y = spiral_data(samples=1000, classes=2)
-print(X[1])
-
-plt.scatter(X[:, 0], X[:, 1], c=y, s=40, cmap='brg')
-plt.show()
-
-print(X.shape)  # (300, 2)
-print(y.shape)  # (300,)
 
 # Initialize network
 nn = NeuralNetwork()

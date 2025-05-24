@@ -11,4 +11,3 @@
 3. For _Loss_ we always use Categorical Cross Entropy.
 ---
 - Finish the comprehensive documentation for the 'From Scratch' implementation. 
-- For me TODO implement Sigmoid.
