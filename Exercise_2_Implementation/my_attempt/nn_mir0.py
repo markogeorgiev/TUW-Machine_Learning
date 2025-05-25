@@ -1,6 +1,8 @@
 import numpy as np
+import random
 
 np.random.seed(0)
+random.seed(0)
 
 class ActivationFunction:
     @staticmethod
@@ -40,7 +42,12 @@ class ActivationFunction:
 
 class Layer:
     def __init__(self, input_dim, output_dim, activation):
-        self.W = np.random.rand(input_dim, output_dim)
+        if activation == 'relu':
+            self.W = np.random.randn(input_dim, output_dim) * np.sqrt(2. / input_dim)
+        elif activation == 'sigmoid':
+            self.W = np.random.randn(input_dim, output_dim) * np.sqrt(1. / input_dim)
+        else:
+            self.W = np.random.randn(input_dim, output_dim) * 0.01
         self.b = np.random.rand(1, output_dim)
         self.activation_name = activation
 
