@@ -108,18 +108,6 @@ for epoch in range(epochs):
 
 ---
 
-## Troubleshooting
-
-- Ensure input and output dimensions match across layers.
-- Use `print(layer.W)` or similar to debug weight values.
-- Use `np.clip` in softmax loss to avoid log(0).
-- If accuracy stagnates, try adjusting learning rate, number of neurons, or activation types.
-
-
-This is a simple example using the spiral dataset provided by `nnfs`:
-
----
-
 ## Example Implementation
 
 ```python

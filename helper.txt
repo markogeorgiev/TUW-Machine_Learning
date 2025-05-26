@@ -1,0 +1,49 @@
+Docs/
+├── Digital Forensics Assignment 3.docx
+└── TUW_DF_A3_logs.txt
+memory_dumps/
+├── a3_given_memory_dump/
+│   └── physmem/
+│       └── physmem.raw
+└── my_own_memory_dump/
+    └── 20250525.mem
+RamCapturer/
+├── tool files...
+└── RamCapturer64.exe
+volatility3/
+├── dump/
+├── vol.py
+└── other git files...
+Volatility3_outputs/
+├── given/
+└── my/
+
+
+16:12 15.5.2025 UTC+2 - Create a memory dump of my local system (Task Manager > Details > "System" process > (Right Click) Full live memory dump
+16:25 15.5.2025 UTC+2 - Download Volitality3 Tool for RAM forensics
+16:47 15.5.2025 UTC+2 - First ever analysis with Volitality3 of the given RAM dump via the "python.exe .\vol.py -f 'D:\TU_Wien\Digital_Forensics\Assignment_3\memory_dumps\a3_given_memory_dump\physmem\physmem.raw' windows.info" command and save output in '../Volitality3_outputs/given_simple_analysis.txt'
+16:56 15.5.2025 UTC+2 - Get the process analysis of the given image via "python.exe .\vol.py -f 'D:\TU_Wien\Digital_Forensics\Assignment_3\memory_dumps\a3_given_memory_dump\physmem\physmem.raw' windows.pslist | more > 'D:\TU_Wien\Digital_Forensics\Assignment_3\Volitality3_outputs\given_process_analysis.txt'"
+19:40 15.5.2025 UTC+2 - Find all Firefox processes from given RAM dump via 'python.exe .\vol.py -f '..\memory_dumps\a3_given_memory_dump\physmem\physmem.raw' windows.pslist | Select-String firefox > '..\Volitality3_outputs\broswer_processes_firefox.txt''
+19:42 15.5.2025 UTC+2 - *IRRELEVANT*Find all files accessed by Firefox through the Firefox PIDs [7300, 7252]
+19:47 15.5.2025 UTC+2 - Look at all processes to find browsers [explorer.exe, tor.exe, msedge.exe, firefox.exe]
+19:56 15.5.2025 UTC+2 - Identify 7252 as the parent firefox.exe process.
+19:57 15.5.2025 UTC+2 - Save all file accesses from PID=7252 and save them to a file "python.exe .\vol.py -f '..\memory_dumps\a3_given_memory_dump\physmem\physmem.raw' windows.handles --pid 7252 > ..\Volitality3_outputs\broswer_processes_firefox_7252.txt"
+19:57 15.5.2025 UTC+2 - In the last file identify many instances of access to Key (Windows Registry)
+19:59 15.5.2025 UTC+2 - Identify at least one PC users as SpongeBob from a log filtered by FILE via the instance "7252    firefox.exe     0x9f0f2c34e270  0x286c  File    0x12019f        \Device\HarddiskVolume3\Users\Spongebob\AppData\Local\Microsoft\Windows\Explorer\iconcache_idx.db". Note that this does something with a cache database. This was found via the command: "python.exe .\vol.py -f '..\memory_dumps\a3_given_memory_dump\physmem\physmem.raw' windows.handles --pid 7252 | Select-String file | more"
+20:23 15.5.2025 UTC+2 - *NOT DONE* Found a file possibly containing Edge search history trying to extract, and got a .dat file "python.exe .\vol.py -f '..\memory_dumps\a3_given_memory_dump\physmem\physmem.raw' -o dump windows.dumpfile --pid 10640 --virtaddr 0x9f0f29558810"
+20:39 15.5.2025 UTC+2 - Next, we check out netstat to see all network connections. Discovered a lot of connections to [52.41.34.173:'Amazon', 144.2.14.25:'LinkedIn', 185.199.109.133:'GitHub', 204.79.197.200:'Microsoft Datacenter?', 140.82.121.4:'GitHub datacenter', 142.250.201.206:'Datacenter in Hungary??', 195.201.202.19:'Hetzner Online GmbH Datacenter ISP',  13.107.18.254:'Microsoft Datacenter', 92.205.17.93:'Host Europe GmbH', 152.199.21.118: 'Edgecast Inc. US Datacenter']
+20:50 15.5.2025 UTC+2 - Trying to get password hashes, ran into Hbootkey error. Using BCF8548EAE42900BEDA0F150E16504B5
+22:15 15.5.2025 UTC+2 - Manually change HBootkey in line 604: filepath: "D:\TU_Wien\Digital_Forensics\Assignment_3\volatility3\volatility3\framework\plugins\windows\registry" [It worked!]
+22:20 15.5.2025 UTC+2 - Use "python.exe .\vol.py -f "..\memory_dumps\a3_given_memory_dump\physmem\physmem.raw" windows.registry.hashdump" to get all hashed passwords and salts.
+22:28 15.5.2025 UTC+2 - Through JohnTheRipper we find that the Admin account has no password????
+18:00 25.5.2025 UTC+2 - Download and Install RamCapturer tool
+18:33 25.5.2025 UTC+2 - Setup tool to do an actual RAM capture and perform analysis
+19:15 25.5.2025 UTC+2 - Initial simple RAM analysis with "python.exe .\vol.py -f ..\memory_dumps\my_own_memory_dump\20250525.mem windows.info"
+22:56 25.5.2025 UTC+2 - Run and save all Chrome processes via "python.exe .\vol.py -f "..\memory_dumps\my_own_memory_dump\20250525.mem" windows.pslist | Select-String chrome > ..\Volitality3_outputs\my\broswer_processes_chrome.txt"
+23:10 25.5.2025 UTC+2 - Using Chrome's main PID to extract search history.
+23:14 25.5.2025 UTC+2 - Using python.exe .\vol.py -f "..\memory_dumps\my_own_memory_dump\20250525.mem" -o .\dump\ windows.dumpfile --pid 18312 --virtaddr 0xb20c145657a0 to extract my search history from the image.
+23:24 25.5.2025 UTC+2 - Finding the process used to capture the RAM dump in the RAM dump via: "python.exe .\vol.py -f "..\memory_dumps\my_own_memory_dump\20250525.mem" windows.pslist | Select-String RamCapture64"
+23:30 25.5.2025 UTC+2 - Find the file for my Google Chrome search history and extract it.
+23:47 25.5.2025 UTC+2 - Checking execute params for cmd with windows.cmdline for given dump ""
+23:48 25.5.2025 UTC+2 - From the windows.cmdline, we find that winpmem_mini_x was used to create the image.
+23:53 25.5.2025 UTC+2 - Discover that SpongeBob was the one who created the RAM dump and likely the one who sent it to us.

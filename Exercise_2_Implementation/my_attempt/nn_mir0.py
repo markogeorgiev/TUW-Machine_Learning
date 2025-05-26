@@ -109,7 +109,6 @@ class LossFunction:
         grad[range(samples), targets] -= 1
         return grad / samples
 
-
 class NeuralNetwork:
     def __init__(self):
         self.layers = []
